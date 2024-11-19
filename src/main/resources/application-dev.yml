@@ -8,7 +8,7 @@ springdoc:
 # 日志配置
 logging:
   level:
-    com.stackflow: debug
+    cn.xgs: debug
     org.springframework: info
 spring:
   # redis 配置
