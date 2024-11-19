@@ -105,7 +105,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 //允许通过
                 .authorizeHttpRequests(registry -> registry.requestMatchers( "/auth/**",
-                                "/api/public-key",
+                                "/api/public-key","/websocket/**",
                                 "/health").permitAll()
                         // 静态资源，可匿名访问
                         .requestMatchers(HttpMethod.GET, "/", "/*.html", "/*/*.html", "/*/*.css", "/*/*.js", "/profile/**", "/appfiles/**").permitAll()
