@@ -1,0 +1,57 @@
+# swagger地址配置
+springdoc:
+  swagger-ui:
+    path: /dev-api
+    enabled: true
+  api-docs:
+    enabled: true
+# 日志配置
+logging:
+  level:
+    com.stackflow: debug
+    org.springframework: info
+spring:
+  # redis 配置
+  data:
+    redis:
+      database: 9
+      # Redis主节点配置
+      host: 192.168.131.128
+      port: 6379
+      timeout: 3000
+      lettuce:
+        pool:
+          max-active: 8
+          # 连接池中的最大空闲连接
+          max-idle: 8
+          # 连接池最大阻塞等待时间（使用负值表示没有限制）
+          max-wait: -1ms
+          # 连接池中的最小空闲连接
+          min-idle: 0
+      password: 1016..
+  datasource:
+    url:  jdbc:mysql://192.168.131.128:3306/mobile-emergency
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: ENC(tRL0h2Ad1APjDGaDHggR1GcGGYXZu4Qj1nQ43uPSfpehagMnXLHbAAsKw3HpnDMzvn7CWH+d3EGrSkOqSlHUq9nsHk5oDJjZNSGE5JZFi7fxoSfmjUL1r+WfIes+vMuIsljxFq8X04HTmzc4wdfDPPbaH3Lg2j4YOlPl4zRIDwiOdzqgsRRLIsUXcG+Y3XjOxQHT6jSpOOvYF+uiMsPv8rxo0LPmhRr4kALEFk+LrIgDWeHFkZxXmc8Krn5s6afHOz5/fCpZThqTXeGQYYNjwjvYwPHMEbK03VcSZXiFsY1mDdBUbZQWCSAzMa1tet5C)
+    username: root
+    password: 1016..
+# 数据库加密
+jasypt:
+  encryptor:
+    password: postgres
+    algorithm: PBEWITHHMACSHA512ANDAES_256
+    iv-generator-classname: org.jasypt.iv.RandomIvGenerator
+    salt-generator-classname: org.jasypt.salt.RandomSaltGenerator
+    string-output-type: base64
+# 用户配置
+user:
+  # 密码配置
+  password:
+    # 密码最大错误次数
+    maxRetryCount: 10
+    # 密码锁定时间（默认10分钟）
+    lockTime: 1
+  # 用户勾选的表头字段缓存时间
+  column:
+    # 过期时间 默认30分钟
+    expire-time: 30
