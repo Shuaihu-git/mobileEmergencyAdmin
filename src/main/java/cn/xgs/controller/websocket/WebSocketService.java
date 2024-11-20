@@ -16,8 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
@@ -41,7 +40,8 @@ public class WebSocketService {
     }
 
     private static ConcurrentHashMap<String, WebSocketClient> webSocketMap = new ConcurrentHashMap<>();
-    private static ConcurrentHashMap<String, LogVo> messagesSendToAdmin = new ConcurrentHashMap<>();
+    private static List<LogVo> messagesSendToAdmin = Collections.synchronizedList(new ArrayList<>());
+
 
 
     /**
@@ -76,7 +76,7 @@ public class WebSocketService {
      * 客户端与服务端连接关闭
      */
     @OnClose
-    public void onClose(String userName) {
+    public void onClose(@PathParam("userName")String userName) {
         webSocketMap.remove(userName);
         log.info("连接关闭！");
     }
@@ -109,8 +109,10 @@ public class WebSocketService {
                 snowAccessLog.setTag("测试");
                 snowAccessService.insert(snowAccessLog);
                 sendMessage("admin",message);
+            }else {
+                messagesSendToAdmin.add(new LogVo(message));
             }
-            messagesSendToAdmin.put("admin",new LogVo(message));
+
         }
 
     }
@@ -152,10 +154,16 @@ public class WebSocketService {
     @Scheduled(fixedRate = 1000 * 10)
     public void pushAdminWebSocket() {
         log.info("处理消息滞留重发问题");
-        if (webSocketMap.contains("admin")) {
-            Stream<Map.Entry<String, LogVo>> stream = messagesSendToAdmin.entrySet().stream();
-            stream.forEach(e ->sendMessage(e.getKey(),e.getValue().getData()));
+        log.info("条件一{}", !(webSocketMap.get("admin") == null));
+        log.info("条件二{}",!messagesSendToAdmin.isEmpty());
+        if (!(webSocketMap.get("admin") == null)&&!messagesSendToAdmin.isEmpty()) {
+            log.info("Admin消息重发{}",!(webSocketMap.get("admin") == null)&&!messagesSendToAdmin.isEmpty());
+           messagesSendToAdmin.forEach(e -> sendMessage("admin", e.getData()));
+           messagesSendToAdmin.clear();
+        }else {
+            log.info("不处理消息滞留重发问题");
         }
+
     }
 
 }
